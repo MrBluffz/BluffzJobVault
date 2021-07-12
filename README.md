@@ -3,7 +3,7 @@
 
 # Dependencies
 - mysql-async
-- es_extended (Tested on v1.2)
+- es_extended (Tested on v1 final)
 
 # Instructions
 Drag and drop to your resources folder
