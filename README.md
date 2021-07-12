@@ -7,6 +7,7 @@
 
 # Instructions
 Drag and drop to your resources folder
+
 add to your server.cfg `ensure BluffzJobVault`.
 
 This resource will automatically create the inventory in your database. All you need to do is add a new vault to your config, and restart the resource or your server.
