@@ -1,129 +1,126 @@
-ESX = nil
+local ESX
+local playerData
 local createdVaults = {}
 
-Citizen.CreateThread(function()
-	while ESX == nil do
-		TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
-		Citizen.Wait(0)
-	end
-
-	while ESX.GetPlayerData().job == nil do
-		Citizen.Wait(10)
-	end
-
-	for k,v in pairs(Config.Vaults) do
-		if v.ShowBlip then
-		    local blip = AddBlipForCoord(v.coords)
-		    SetBlipSprite (blip, v.Type)
-		    SetBlipScale  (blip, v.Size)
-		    SetBlipColour (blip, v.Color)
-		    SetBlipAsShortRange(blip, true)
-		    BeginTextCommandSetBlipName('STRING')
-		    AddTextComponentSubstringPlayerName(v.Label)
-		    EndTextCommandSetBlipName(blip)
-	    end
-
-        if v.ShowProp == true then
-			ESX.Game.SpawnObject(v.Prop, v.coords, function(obj)
-				SetEntityHeading(obj, (v.h - 180))
-				PlaceObjectOnGroundProperly(obj)
-				FreezeEntityPosition(obj, true)
-                table.insert(createdVaults, obj)
-			end)
-		end
-	end
+RegisterNetEvent('esx:setJob')
+AddEventHandler('esx:setJob',function(j)
+  playerData.job = j
 end)
 
-AddEventHandler('onResourceStop', function()
-    for x,y in pairs(createdVaults) do
-        DeleteEntity(y)
+function getClosestVault(pos)
+  local closest,dist
+
+  for k,v in pairs(Config.Vaults) do
+    local d = #(v.Coords - pos)
+    if not dist or d < dist then
+      closest = k
+      dist = d
     end
-end)
+  end
 
+  return closest,dist
+end
 
+function setupVaults()
+  for k,v in pairs(Config.Vaults) do
+    if v.ShowBlip then
+      local blip = AddBlipForCoord(v.Coords)
+      SetBlipSprite (blip, v.Type)
+      SetBlipScale  (blip, v.Size)
+      SetBlipColour (blip, v.Color)
+      SetBlipAsShortRange(blip, true)
+      BeginTextCommandSetBlipName('STRING')
+      AddTextComponentSubstringPlayerName(v.Label)
+      EndTextCommandSetBlipName(blip)
+    end
 
-AddEventHandler('BluffzJobVault:hasEnteredMarker', function(zone)
-	currentAction     = 'vault'
-	currentActionMsg  = _U('vault_menu')
-	currentActionData = {zone = zone}
-end)
+    if v.ShowProp == true then
+      ESX.Game.SpawnObject(v.Prop, v.Coords, function(obj)
+        SetEntityAsMissionEntity(obj,true,true)
+        SetEntityHeading(obj,v.Heading-180)
+        PlaceObjectOnGroundProperly(obj)
+        FreezeEntityPosition(obj,true)
+        table.insert(createdVaults,obj)
+      end)
+    end
+  end
+end
 
-AddEventHandler('BluffzJobVault:hasExitedMarker', function(zone)
-	currentAction = nil
-end)
+function showHelpNotification(msg)
+  AddTextEntry('vaultsHelpNotif', msg)
+  DisplayHelpTextThisFrame('vaultsHelpNotif', false)
+end
+
+function setupEsx()
+  while not ESX do
+    TriggerEvent('esx:getSharedObject', function(obj) 
+      ESX = obj 
+    end)
+
+    Wait(100)
+  end
+
+  while not ESX.IsPlayerLoaded() do
+    Wait(500)
+  end
+
+  playerData = ESX.GetPlayerData()
+end
+
+function notify(title, msg, duration, type)
+  if Config.Notify == 'ns' then
+    exports['ns_notify']:sendNotify(title, msg, duration, type)
+  elseif Config.Notify == 'mythic_old' then
+    exports['mythic_notify']:DoCustomHudText(type, msg, duration)
+  elseif Config.Notify == 'mythic_new' then
+    exports['mythic_notify']:SendAlert(type, msg, { ['background-color'] = '#ffffff', ['color'] = '#000000' })
+  elseif Config.Notify == 'esx' then
+    ESX.ShowNotification(msg)
+  elseif Config.Notify == 'chat' then
+    TriggerEvent('chatMessage', msg)
+  elseif Config.Notify == 'custom' then
+    -- Insert Custom Notification here
+  end
+end
 
 Citizen.CreateThread(function()
-	while true do
-		Citizen.Wait(0)
-		local playerCoords = GetEntityCoords(PlayerPedId())
-		local isInMarker, letSleep, currentZone = false, false
-		local ReqJob, HasJob
-		local VCoords = {}
+  local lastVault
+  local helpLabel = _U('vault_menu')
+  local IsInMarker, AlreadyInMarker = false, false
+  setupEsx()
+  setupVaults()
 
-		for k,v in pairs(Config.Vaults) do
-			table.insert(VCoords, v.coords)
-			for i = 1, #VCoords, 1 do
-				local distance = #(playerCoords - VCoords[i])
-				if distance < 2.0 then
-					isInMarker  = true
-					currentZone = k
-					lastZone    = k
-					ReqJob		= v.ReqJob
-				end
-			end
-		end
+  while true do
+    local ped = PlayerPedId()
+    local pos = GetEntityCoords(ped)
 
-		if isInMarker and not hasAlreadyEnteredMarker then
-			hasAlreadyEnteredMarker = true
-			if ReqJob ~= nil then
-				for _,y in pairs(ReqJob) do
-					if y == ESX.GetPlayerData().job.name then
-						HasJob = true
-					end
-				end
-				if HasJob then						
-					TriggerEvent('BluffzJobVault:hasEnteredMarker', currentZone)
-				else
-					if Config.notify == 'esx' then
-						ESX.ShowNotification('You do not have the required job to use this vault!')
-					elseif Config.notify == 'ns' then
-						exports['ns_notify']:sendNotify("Wrong Job", "You do not have the required job to use this vault!", 5000, 'error')
-					elseif Config.notify == 'custom' then
-						--Insert Custom Notification Here
-					end	
-				end
-			else
-				TriggerEvent('BluffzJobVault:hasEnteredMarker', currentZone)	
-			end
-		end
+    local closestVault,vaultDist = getClosestVault(pos)
+    local vault = Config.Vaults[closestVault]
 
-		if not isInMarker and hasAlreadyEnteredMarker then
-			hasAlreadyEnteredMarker = false
-			TriggerEvent('BluffzJobVault:hasExitedMarker', lastZone)
-			HasJob = false
-		end
+      if not lastVault or lastVault ~= closestVault then
+      if lastVault then
+        AlreadyInMarker = false
+      end
+    end
+      
+    if vaultDist <= Config.InteractDist then
+      lastVault = closestVault
+      IsInMarker = true
+      if not AlreadyInMarker and IsInMarker then
+        if not vault.ReqJob[playerData.job.name] then
+          notify("Wrong Job", "You do not have the correct job to access this vault!", 5000, 'error')
+        end
+      end
+      AlreadyInMarker = true
+      if not vault.ReqJob or vault.ReqJob[playerData.job.name] then
+        showHelpNotification(helpLabel)
 
-		if letSleep then
-			Citizen.Wait(500)
-		end
-	end
-end)        
- 
-Citizen.CreateThread(function()
-	while true do
-		Citizen.Wait(0)
+        if IsControlJustPressed(0,38) then
+          exports["mf-inventory"]:openOtherInventory(closestVault)
+        end
+      end
+    end
 
-		if currentAction then
-			ESX.ShowHelpNotification(currentActionMsg)
-
-			if IsControlJustReleased(0, 38) then
-				if currentAction == 'vault' then
-                    exports["mf-inventory"]:openOtherInventory(currentActionData.zone)
-				end
-				currentAction = nil
-			end
-		else
-			Citizen.Wait(500)
-		end
-	end
+    Wait(vaultDist < 10.0 and 0 or 500)
+  end
 end)
