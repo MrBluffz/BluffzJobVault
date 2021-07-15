@@ -5,6 +5,13 @@
 - mysql-async
 - es_extended (Tested on v1 final)
 
+## UPDATE
+
+Huge thanks to ModFreakz who literally re-wrote the entire thing. So this isn't even really my resource anymore. Huge shoutout to ModFreakz for helping to teach me what each of his changes actually meant.
+
+I have also added some more locales for language, added more notification systems into the config, and made it easier to "customize" your own notification system if it's not already in the config. Interact Distance is now in config, instead of being hard coded in. Max Slots/Max Weight can now be set in the config instead of being hard coded as well.
+
+
 # Instructions
 Drag and drop to your resources folder
 
