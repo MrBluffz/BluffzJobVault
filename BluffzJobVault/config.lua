@@ -4,9 +4,9 @@ Config = {
   InteractDist = 2.0,                             -- Distance from vaults to interact
   Vaults = {
     evidenceMRPD1 = {                             -- Inventory Name (MUST BE UNIQUE). Script will auto search if this inventory exists, and if it doesn't, it will create it for you.
-      ShowProp = false,                            -- Set to true if you want to see the vault prop. set to false if you do not want to see the vault prop. (Default: true)
+      ShowProp = false,                            -- Set to true if you want to see the vault prop. set to false if you do not want to see the vault prop.
       Prop = 'p_v_43_safe_s',                     -- Vault Prop Name
-      Coords = vector3(474.8671, -996.9033, 26.2734),   -- These coords are used for your vault prop location, and your blip location.
+      Coords = vector3(474.8671, -996.9033, 26.2734),   -- These coords are used for your vault prop location, and your blip location. Preset to Gabz MRPD Evidence room.
       Heading = 358.1,                            -- Heading for prop. Make it the same heading your player is standing.
       ShowBlip = false,                            -- Set to true if you want blip, set to false if you do NOT want map blip (default: true)
       Size  = 1.0,                                -- How big the blip will be on the map/minimap.
@@ -19,9 +19,9 @@ Config = {
     },
 
     evidenceMRPD2 = {                             -- Inventory Name. Script will auto search if this inventory exists, and if it doesn't, it will create it for you.
-      ShowProp = false,                            -- set to true if you want to see the vault prop. set to false if you do not want to see the vault prop. (Default: true)
+      ShowProp = false,                            -- set to true if you want to see the vault prop. set to false if you do not want to see the vault prop.
       Prop = 'p_v_43_safe_s',                     -- Vault Prop Name
-      Coords = vector3(472.5785, -995.2488, 26.2734),   -- Coords for Blip and Prop
+      Coords = vector3(472.5785, -995.2488, 26.2734),   -- Coords for Blip and Prop. Preset to Gabz MRPD Evidence room.
       Heading = 189.61,                           -- Heading for prop
       ShowBlip = false,                            -- Set to true if you want blip, set to false if you do NOT want map blip (default: true)
       Size  = 1.0,                                -- How big the blip will be on the map/minimap.
