@@ -107,7 +107,7 @@ Citizen.CreateThread(function()
       lastVault = closestVault
       IsInMarker = true
       if not AlreadyInMarker and IsInMarker then
-        if not vault.ReqJob[playerData.job.name] then
+        if vault.ReqJob and not vault.ReqJob[playerData.job.name] then
           notify("Wrong Job", "You do not have the correct job to access this vault!", 5000, 'error')
         end
       end
