@@ -10,8 +10,8 @@ Citizen.CreateThread(function()
           "inventory",
           "vault",
           "vault_storage",
-          data.maxWeight or 500.0,
-          data.maxSlots or 50
+          data.MaxWeight or 500.0,
+          data.MaxSlots or 50
         )
       end
     end
