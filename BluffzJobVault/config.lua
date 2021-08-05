@@ -37,6 +37,21 @@ Config = {
       MaxWeight = 500.0,                          -- The max weight for this inventory container.
       MaxSlots = 50,                              -- The slot count for this inventory
     },
+    
+    pID = {                             -- Inventory Name. WILL ADD PLAYER IDENTIFIER TO END OF NAME
+      ShowProp = false,                            -- set to true if you want to see the vault prop. set to false if you do not want to see the vault prop. (Default: true)
+      Prop = 'p_v_43_safe_s',                     -- Vault Prop Name
+      Coords = vector3(472.5785, -995.2488, 26.2734),   -- Coords for Blip and Prop
+      Heading = 189.61,                           -- Heading for prop
+      ShowBlip = false,                            -- Set to true if you want blip, set to false if you do NOT want map blip (default: true)
+      Size  = 1.0,                                -- How big the blip will be on the map/minimap.
+      Type  = 59,                                 -- Which blip to display    See: https://docs.fivem.net/docs/game-references/blips/
+      Color = 25,                                 -- What color Blip you want   See: https://docs.fivem.net/docs/game-references/blips/
+      Label = 'Player Vault',           -- This will be the Blip name if you have ShowBlip = true. 
+      ReqJob = {'identifier'},           -- MUST BE EXACTLY AND ONLY LIKE THIS FOR PLAYER IDENTIFIER BASED VAULT
+      MaxWeight = 500.0,                          -- The max weight for this inventory container.
+      MaxSlots = 50,                              -- The slot count for this inventory
+    },
   }
 }
 
