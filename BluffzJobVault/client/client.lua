@@ -107,7 +107,7 @@ Citizen.CreateThread(function()
       lastVault = closestVault
       IsInMarker = true
       if not AlreadyInMarker and IsInMarker then
-        if vault.ReqJob and not vault.ReqJob[playerData.job.name] then
+        if vault.ReqJob and not vault.ReqJob['identifier'] and not vault.ReqJob[playerData.job.name] then
           notify("Wrong Job", "You do not have the correct job to access this vault!", 5000, 'error')
         end
       end
@@ -117,6 +117,12 @@ Citizen.CreateThread(function()
 
         if IsControlJustPressed(0,38) then
           exports["mf-inventory"]:openOtherInventory(closestVault)
+        end
+      elseif vault.ReqJob['identifier'] then
+        showHelpNotification(helpLabel)
+
+        if IsControlJustPressed(0,38) then
+          exports["mf-inventory"]:openOtherInventory(closestVault..playerData.identifier)
         end
       end
     end
