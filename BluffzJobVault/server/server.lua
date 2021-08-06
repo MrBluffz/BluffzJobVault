@@ -21,6 +21,7 @@ end)
 RegisterServerEvent('BluffzVaults:checkCreate')
 AddEventHandler('BluffzVaults:checkCreate', function(id)
   local inv = exports["mf-inventory"]:getInventory(id)
+  local data = Config.Vaults[id]
   if not inv then
     print(string.format("creating new vault inventory for identifier '%s'",id))
 
