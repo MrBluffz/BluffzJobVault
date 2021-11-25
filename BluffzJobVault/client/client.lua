@@ -65,6 +65,7 @@ function setupEsx()
   end
 
   playerData = ESX.GetPlayerData()
+  identifier = playerData.identifier
 end
 
 function notify(title, msg, duration, type)
@@ -108,15 +109,19 @@ Citizen.CreateThread(function()
       IsInMarker = true
       if not AlreadyInMarker and IsInMarker then
         if vault.ReqJob and not vault.ReqJob[playerData.job.name] then
-          notify("Wrong Job", "You do not have the correct job to access this vault!", 5000, 'error')
+          if vault.Steam and not vault.Steam[identifier] then
+            notify("Wrong Job", "You do not have the correct job to access this vault!", 5000, 'error')
+          end
         end
       end
       AlreadyInMarker = true
       if not vault.ReqJob or vault.ReqJob[playerData.job.name] then
-        showHelpNotification(helpLabel)
+        if not vault.Steam or vault.Steam[identifier] then
+          showHelpNotification(helpLabel)
 
-        if IsControlJustPressed(0,38) then
-          exports["mf-inventory"]:openOtherInventory(closestVault)
+          if IsControlJustPressed(0,38) then
+            exports["mf-inventory"]:openOtherInventory(closestVault)
+          end
         end
       end
     end
