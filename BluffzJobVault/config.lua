@@ -19,6 +19,7 @@ Config = {
       Color = 25,                                 -- What color Blip you want   See: https://docs.fivem.net/docs/game-references/blips/
       Label = 'MRPD Evidence Locker 1',           -- This will be the Blip name if you have ShowBlip = true. 
       ReqJob = {'police', 'ambulance'},           -- Delete entire line if you don't want a job check, otherwise make sure your job/jobs are in { } like this example {'insertjob', 'insertjob2'}
+      Steam = {'steam:000000000000000', 'steam:000000000000000'}, -- Delete entire line if you don't want a steam id check, otherwise make sure your steam id(s) are in { } like this example {'insertsteamid', 'insertsteamid2'}
       MaxWeight = 500.0,                          -- The max weight for this inventory container.
       MaxSlots = 50,                              -- The slot count for this inventory
     },
@@ -34,6 +35,7 @@ Config = {
       Color = 25,                                 -- What color Blip you want   See: https://docs.fivem.net/docs/game-references/blips/
       Label = 'MRPD Evidence Locker 2',           -- This will be the Blip name if you have ShowBlip = true. 
       ReqJob = {'police', 'ambulance'},           -- Delete entire line if you don't want a job check, otherwise make sure your job/jobs are in { } like this example {'insertjob', 'insertjob2'}
+      Steam = {'steam:000000000000000', 'steam:000000000000000'}, -- Delete entire line if you don't want a steam id check, otherwise make sure your steam id(s) are in { } like this example {'insertsteamid', 'insertsteamid2'}
       MaxWeight = 500.0,                          -- The max weight for this inventory container.
       MaxSlots = 50,                              -- The slot count for this inventory
     },
@@ -51,5 +53,17 @@ for k,v in pairs(Config.Vaults) do
     end
 
     v.ReqJob = jobLookup
+  end
+end
+
+for k,v in pairs(Config.Vaults) do
+  if v.Steam then
+    local steamLookup = {}
+
+    for _,steam in ipairs(v.Steam) do
+      steamLookup[steam] = true
+    end
+
+    v.Steam = steamLookup
   end
 end
